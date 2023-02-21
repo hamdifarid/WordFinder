@@ -56,7 +56,7 @@
 
         var searchbar = document.getElementById("searchbar");
         searchbar.addEventListener("keydown", function (event) {
-            if (event.keyCode == 13) {
+            if (event.keyCode == 13 && document.getElementById("searchbar").value != "") {
                 get_word();
             }
         });
