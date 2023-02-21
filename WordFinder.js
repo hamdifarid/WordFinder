@@ -2,7 +2,6 @@ var express = require("express");
 var app = express();
 var cors = require('cors');
 app.use(cors());
-//use the body parser
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 const fs = require('fs');
@@ -81,12 +80,10 @@ app.get("/get_word_scribble_find", (req, res) => {
     var length = word.length;
     //console.log(length)
 
-    //get all the words as long as the word
     var words = words.filter(function (el) {
         return el.length == length + 1;
     });
     for (var i = 0; i < length; i++) {
-        //get all the words whose second letter is the second letter of the word
         var words = words.filter(function (el) {
             if (word[i] != "_") {
                 return el[i] == word[i];
@@ -97,7 +94,6 @@ app.get("/get_word_scribble_find", (req, res) => {
             }
         });
     }
-    //map the words to remove the new line
     var words = words.map(function (el) {
         return el.replace(/(\r\n|\n|\r)/gm, "");
     });
