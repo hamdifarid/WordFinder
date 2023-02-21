@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>
+        Dictionary Word Finder
+    </title>
+
+</head>
+
+<body>
+    <style>
+        #searchbar {
+            padding: 15px;
+            border-radius: 10px;
+            width: 20%;
+            transition: ease-in-out 0.5s;
+        }
+
+        #searchbar:focus {
+            width: 50%;
+            transition: ease-in-out 0.5s;
+            outline: none;
+
+        }
+
+        #list {
+            font-size: 1.5em;
+            margin-left: 90px;
+        }
+
+        #num_words {
+            border-radius: 10px;
+            width: 20%;
+            transition: ease-in-out 0.5s;
+        }
+
+        #letters {
+            border-radius: 10px;
+            width: 20%;
+            transition: ease-in-out 0.5s;
+        }
+    </style>
+    <!-- input tag -->
+    <p style="color: red;">Make sure the js file is located in the same location as the text file and html file and is
+        running (Both Available on Github)</p>
+    <p style="color: blue;">You can type node WordFinder.js in cmd to run the server</p>
+    <input id="searchbar" type="text" name="search" placeholder="Search Dictionary Press Enter">
+    <p>Demo: appl_ , sea_ons , mind_ng , b_lt , be__ing</p>
+    <p>or Type Incomplete words like hel, su, munchi,</p>
+    <p id="num_words_found">Total Number of Words</p>
+    <ol id="list">
+
+    </ol>
+    <script>
+
+        var searchbar = document.getElementById("searchbar");
+        searchbar.addEventListener("keydown", function (event) {
+            if (event.keyCode == 13) {
+                get_word();
+            }
+        });
+
+        function get_word() {
+            if (document.getElementById("searchbar").value.includes("_")) {
+                get_word_scriblle_find();
+            }
+            else {
+                document.getElementById("list").innerHTML = "";
+                var input = document.getElementById("searchbar").value;
+                fetch('http:localhost:3000/get_word?word=' + input)
+                    .then((response) => response.json())
+                    .then((data) => {
+                        for (var i = 0; i < data.length; i++) {
+                            var node = document.createElement("LI");
+                            var textnode = document.createTextNode(data[i]);
+                            node.appendChild(textnode);
+                            document.getElementById("list").appendChild(node);
+                        }
+                        document.getElementById("num_words_found").innerHTML = "Total Number of Words Found: " + data.length;
+
+                    });
+            }
+
+            //console.log(input);
+
+
+        }
+        /*
+         function get_word_scribble() {
+ 
+             document.getElementById("list").innerHTML = "";
+             //get the number of words
+             var num_words = document.getElementById("num_words").value;
+             //get the letters
+             var letters = document.getElementById("letters").value;
+             if (num_words == "" || letters == "") {
+                 alert("Please enter the number of words and the letters");
+                 return;
+             }
+             if (isNaN(num_words)) {
+                 alert("Please enter a number for the number of words");
+                 return;
+             }
+             // if number of words is less than length of letters 
+             if (num_words < letters.length) {
+                 alert("Please enter a number of words less than the length of the letters");
+                 return;
+             }
+             const obj = {
+                 num_words: parseInt(num_words),
+                 letters: letters
+             }
+             //console.log(obj);
+             //send obj to server
+             fetch('http:localhost:3000/get_word_scribble', {
+                 method: 'POST',
+                 headers: {
+                     'Content-Type': 'application/json'
+                 },
+                 body: JSON.stringify(obj)
+             })
+                 .then((response) => response.json())
+                 .then((data) => {
+                     //console.log(data);
+ 
+                     document.getElementById("num_words_found").innerHTML = "Total Number of Words Found: " + data.length;
+                     //console.log(data.length);
+                     for (var i = 0; i < data.length; i++) {
+                         //make the list numbererd
+                         var node = document.createElement("LI");
+                         var textnode = document.createTextNode(data[i]);
+                         node.appendChild(textnode);
+                         document.getElementById("list").appendChild(node);
+                     }
+ 
+                 });
+         }
+        */
+        function get_word_scriblle_find() {
+            //clear the list
+            document.getElementById("list").innerHTML = "";
+
+            var word = document.getElementById("searchbar").value;
+            //send the word to server
+            fetch('http:localhost:3000/get_word_scribble_find?word=' + word)
+                .then((response) => response.json())
+                .then((data) => {
+                    //console.log(data);
+                    document.getElementById("list").innerHTML = "";
+                    var counter = 0;
+                    //append the data to the list
+                    for (var i = 0; i < data.length; i++) {
+                        var node = document.createElement("LI");
+                        var textnode = document.createTextNode(data[i]);
+                        node.appendChild(textnode);
+                        document.getElementById("list").appendChild(node);
+                        counter++;
+                    }
+                   // console.log(data.length);
+                    document.getElementById("num_words_found").innerHTML = "Total Number of Words Found: " + counter;
+                });
+
+        }
+    </script>
+</body>
+
+</html>
