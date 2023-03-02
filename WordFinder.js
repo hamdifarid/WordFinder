@@ -2,14 +2,37 @@ var express = require("express");
 var app = express();
 var cors = require('cors');
 app.use(cors());
+//use the body parser
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 const fs = require('fs');
 
 
+//read the current directory
+console.log(__dirname);
+//run a terminal command
+const { exec } = require("child_process");
+exec("WordFinder.html", (error, stdout, stderr) => {
+    if (error) {
+        console.log(`error: ${error.message}`);
+        return;
+    }
+    if (stderr) {
+        console.log(`stderr: ${stderr}`);
+        return;
+    }
+});
+
 app.use(express.static("public"));
 app.listen(process.env.PORT || 3000,
     () => console.log("Server is running..."));
+
+
+
+
+app.get("/", (req, res) => {
+    res.sendFile(__dirname + "/WordFinder.html");
+});
 
 app.get("/get_word", (req, res) => {
 
@@ -80,10 +103,12 @@ app.get("/get_word_scribble_find", (req, res) => {
     var length = word.length;
     //console.log(length)
 
+    //get all the words as long as the word
     var words = words.filter(function (el) {
         return el.length == length + 1;
     });
     for (var i = 0; i < length; i++) {
+        //get all the words whose second letter is the second letter of the word
         var words = words.filter(function (el) {
             if (word[i] != "_") {
                 return el[i] == word[i];
@@ -94,6 +119,7 @@ app.get("/get_word_scribble_find", (req, res) => {
             }
         });
     }
+    //map the words to remove the new line
     var words = words.map(function (el) {
         return el.replace(/(\r\n|\n|\r)/gm, "");
     });
