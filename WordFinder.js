@@ -2,15 +2,11 @@ var express = require("express");
 var app = express();
 var cors = require('cors');
 app.use(cors());
-//use the body parser
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 const fs = require('fs');
 
 
-//read the current directory
-console.log(__dirname);
-//run a terminal command
 const { exec } = require("child_process");
 exec("WordFinder.html", (error, stdout, stderr) => {
     if (error) {
